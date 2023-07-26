@@ -1,0 +1,56 @@
+cabal-version:      3.0
+name:               halo2-hs
+version:            0.1.0.0
+license:            BSD-3-Clause
+license-file:       LICENSE
+author:             Paul Cadman
+maintainer:         paul@heliax.dev
+category:           Network
+build-type:         Simple
+extra-doc-files:    CHANGELOG.md
+
+common lang
+  ghc-options:
+      -Wall
+  frameworks: Security
+  build-depends:
+      base >= 4.16
+  default-language:
+      GHC2021
+  default-extensions:
+      DataKinds
+      DeriveAnyClass
+      DerivingStrategies
+      DerivingVia
+      TypeFamilies
+      UndecidableInstances
+
+library
+  import:
+      lang
+  exposed-modules:
+      C.GettingStarted
+  hs-source-dirs:
+      src
+  build-depends:
+    , bytestring
+    , foreign-rust
+    , generics-sop
+    , text
+  build-tool-depends:
+      c2hs:c2hs
+  pkgconfig-depends:
+      halo2_rs-uninstalled
+
+executable demo
+  import:
+      lang
+  main-is:
+      Main.hs
+  hs-source-dirs:
+      demo
+  build-depends:
+    , halo2-hs
+    , foreign-rust
+  pkgconfig-depends:
+      halo2_rs-uninstalled

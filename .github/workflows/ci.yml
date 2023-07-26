@@ -1,0 +1,83 @@
+name: halo2-hs
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test-demo:
+    strategy:
+        matrix:
+            os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up GHC
+        uses: haskell/actions/setup@v2
+        id: setup
+        with:
+          ghc-version: 9.2.6
+
+      - working-directory: halo2-rs
+        run: rustup toolchain install nightly --profile minimal
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: halo2-rs
+          key: ${{ runner.os }}
+
+      - name: Install cargo-c
+        working-directory: halo2-rs
+        run: cargo install cargo-c
+
+      - name: Build rust wrapper
+        working-directory: halo2-rs
+        run: cargo cbuild --library-type=staticlib --release
+
+      - name: Set PKG_CONFIG_PATH
+        if: runner.os == 'macOS'
+        working-directory: halo2-rs
+        run: echo "PKG_CONFIG_PATH=$PWD/target/x86_64-apple-darwin/release" >> $GITHUB_ENV
+
+      - name: Set PKG_CONFIG_PATH
+        if: runner.os == 'Linux'
+        working-directory: halo2-rs
+        run: echo "PKG_CONFIG_PATH=$PWD/target/x86_64-unknown-linux-gnu/release" >> $GITHUB_ENV
+
+      - name: Configure the build
+        working-directory: halo2-hs
+        run: |
+          cabal configure --enable-tests --enable-benchmarks --disable-documentation
+          cabal build --dry-run
+
+      - name: Restore cached dependencies
+        uses: actions/cache/restore@v3
+        id: cache
+        env:
+          key: ${{ runner.os }}-ghc-${{ steps.setup.outputs.ghc-version }}-cabal-${{ steps.setup.outputs.cabal-version }}
+        with:
+          path: ${{ steps.setup.outputs.cabal-store }}
+          key: ${{ env.key }}-plan-${{ hashFiles('halo2-hs/**/plan.json') }}
+          restore-keys: ${{ env.key }}-
+
+      - name: Install dependencies
+        run: cabal build all --only-dependencies
+
+      - name: Save cached dependencies
+        uses: actions/cache/save@v3
+        if: ${{ steps.cache.outputs.cache-primary-key != steps.cache.outputs.cache-matched-key }}
+        with:
+          path: ${{ steps.setup.outputs.cabal-store }}
+          key: ${{ steps.cache.outputs.cache-primary-key }}
+
+      - name: Build Haskell library
+        working-directory: halo2-hs
+        run: cabal build
+
+      - name: Run Demo
+        working-directory: halo2-hs
+        run: cabal run

@@ -29,7 +29,8 @@ library
   import:
       lang
   exposed-modules:
-      C.GettingStarted
+      Halo2Hs.C.Fp
+      Halo2Hs.Fp
   hs-source-dirs:
       src
   build-depends:

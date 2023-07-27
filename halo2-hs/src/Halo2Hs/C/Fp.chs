@@ -1,4 +1,4 @@
-module C.GettingStarted (halo2FpFromRaw, halo2FpFromRawArgs, fpDebug) where
+module Halo2Hs.C.Fp (Fp, fpFromRaw, fpFromRawArgs, halo2FpDebug) where
 
 #include "halo2_rs.h"
 
@@ -8,12 +8,12 @@ import Data.Text (Text)
 
 {#pointer *Fp foreign finalizer halo2_rs_free_fp newtype #}
 
-{# fun unsafe halo2_rs_fp_from_raw as halo2FpFromRaw
+{# fun unsafe halo2_rs_fp_from_raw as fpFromRaw
      { toBorshVar*  `[Word64]'& }
   -> `Fp'
 #}
 
-{# fun unsafe halo2_rs_fp_from_raw_args as halo2FpFromRawArgs
+{# fun unsafe halo2_rs_fp_from_raw_args as fpFromRawArgs
      { `Word64'
      , `Word64'
      , `Word64'
@@ -28,6 +28,3 @@ import Data.Text (Text)
      }
   -> `()'
 #}
-
-fpDebug :: Fp -> IO Text
-fpDebug = withBorshVarBuffer . halo2FpDebug

@@ -1,6 +1,6 @@
 use std::marker::PhantomData;
 
-use halo2_proofs::pasta::Fp;
+use halo2_proofs::pasta::Fp as Halo2Fp;
 use haskell_ffi::{from_haskell::marshall_from_haskell_var, to_haskell::marshall_to_haskell_var};
 
 #[no_mangle]
@@ -20,16 +20,16 @@ pub enum RW {}
 pub const RW: PhantomData<RW> = PhantomData;
 
 #[derive(Debug)]
-pub struct FpHandle(Fp);
+pub struct Fp(Halo2Fp);
 
 #[no_mangle]
 pub extern "C" fn halo2_rs_fp_from_raw(
     raw_bytes: *const u8,
     raw_bytes_len: usize,
-) -> *mut FpHandle {
+) -> *mut Fp {
     let raw_vec: Vec<u64> = marshall_from_haskell_var(raw_bytes, raw_bytes_len, RW);
     let raw: [u64; 4] = to_sized_array(raw_vec);
-    let fp = Box::new(FpHandle(Fp::from_raw(raw)));
+    let fp = Box::new(Fp(Halo2Fp::from_raw(raw)));
     Box::into_raw(fp)
 }
 
@@ -39,19 +39,19 @@ pub extern "C" fn halo2_rs_fp_from_raw_args(
     a2: u64,
     a3: u64,
     a4: u64,
-) -> *mut FpHandle {
-    let fp = Box::new(FpHandle(Fp::from_raw([a1, a2, a3, a4])));
+) -> *mut Fp {
+    let fp = Box::new(Fp(Halo2Fp::from_raw([a1, a2, a3, a4])));
     Box::into_raw(fp)
 }
 
 #[no_mangle]
-pub extern "C" fn halo2_rs_free_fp(fp: *mut FpHandle) {
-    let _fp: Box<FpHandle> = unsafe { Box::from_raw(fp) };
+pub extern "C" fn halo2_rs_free_fp(fp: *mut Fp) {
+    let _fp: Box<Fp> = unsafe { Box::from_raw(fp) };
 }
 
 #[no_mangle]
-pub extern "C" fn halo2_rs_fp_debug(fp: *mut FpHandle, out: *mut u8, out_len: &mut usize) {
-    let fp: &FpHandle = unsafe { &*fp };
+pub extern "C" fn halo2_rs_fp_debug(fp: *mut Fp, out: *mut u8, out_len: &mut usize) {
+    let fp: &Fp = unsafe { &*fp };
     let result = format!("{:#?}", fp.0);
     marshall_to_haskell_var(&result, out, out_len, RW);
 }

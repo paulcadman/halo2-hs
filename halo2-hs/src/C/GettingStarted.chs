@@ -6,11 +6,11 @@ import Data.Word
 import Foreign.Rust.Marshall.Variable
 import Data.Text (Text)
 
-{#pointer *FpHandle foreign finalizer halo2_rs_free_fp newtype #}
+{#pointer *Fp foreign finalizer halo2_rs_free_fp newtype #}
 
 {# fun unsafe halo2_rs_fp_from_raw as halo2FpFromRaw
      { toBorshVar*  `[Word64]'& }
-  -> `FpHandle'
+  -> `Fp'
 #}
 
 {# fun unsafe halo2_rs_fp_from_raw_args as halo2FpFromRawArgs
@@ -19,15 +19,15 @@ import Data.Text (Text)
      , `Word64'
      , `Word64'
      }
-  -> `FpHandle'
+  -> `Fp'
 #}
 
 {# fun unsafe halo2_rs_fp_debug as halo2FpDebug
-     { `FpHandle'
+     { `Fp'
      , getVarBuffer `Buffer Text'&
      }
   -> `()'
 #}
 
-fpDebug :: FpHandle -> IO Text
+fpDebug :: Fp -> IO Text
 fpDebug = withBorshVarBuffer . halo2FpDebug

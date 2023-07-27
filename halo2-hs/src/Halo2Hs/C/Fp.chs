@@ -1,4 +1,4 @@
-module Halo2Hs.C.Fp (Fp, fpFromRaw, fpFromRawArgs, halo2FpDebug) where
+module Halo2Hs.C.Fp where
 
 #include "halo2_rs.h"
 
@@ -27,4 +27,54 @@ import Data.Text (Text)
      , getVarBuffer `Buffer Text'&
      }
   -> `()'
+#}
+
+
+{# fun pure unsafe halo2_rs_fp_zero as fpZero
+     {}
+  -> `Fp'
+#}
+
+{# fun pure unsafe halo2_rs_fp_one as fpOne
+     {}
+  -> `Fp'
+#}
+
+{# fun pure unsafe halo2_rs_fp_double as fpDouble
+     { `Fp'
+     }
+  -> `Fp'
+#}
+
+{# fun pure unsafe halo2_rs_fp_neg as fpNeg
+     { `Fp'
+     }
+  -> `Fp'
+#}
+
+{# fun pure unsafe halo2_rs_fp_square as fpSquare
+     { `Fp'
+     }
+  -> `Fp'
+#}
+
+{# fun pure unsafe halo2_rs_fp_mul as fpMul
+     { `Fp'
+     , `Fp'
+     }
+  -> `Fp'
+#}
+
+{# fun pure unsafe halo2_rs_fp_add as fpAdd
+     { `Fp'
+     , `Fp'
+     }
+  -> `Fp'
+#}
+
+{# fun pure unsafe halo2_rs_fp_sub as fpSub
+     { `Fp'
+     , `Fp'
+     }
+  -> `Fp'
 #}

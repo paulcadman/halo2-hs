@@ -3,6 +3,14 @@ module Halo2Hs.Fp (
   , fpFromRaw
   , fpFromRawArgs
   , fpDebug
+  , fpMul
+  , fpAdd
+  , fpSub
+  , fpOne
+  , fpZero
+  , fpDouble
+  , fpNeg
+  , fpSquare
 ) where
 
 import Foreign.Rust.Marshall.Variable

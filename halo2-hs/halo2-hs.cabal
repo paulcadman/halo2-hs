@@ -29,8 +29,9 @@ library
   import:
       lang
   exposed-modules:
-      Halo2Hs.C.Fp
       Halo2Hs.Fp
+  other-modules:
+      Halo2Hs.C.Fp
   hs-source-dirs:
       src
   build-depends:
@@ -43,6 +44,23 @@ library
       c2hs:c2hs
   pkgconfig-depends:
       halo2_rs-uninstalled
+
+test-suite test-halo2-hs
+  import:
+      lang
+  type:
+      exitcode-stdio-1.0
+  main-is:
+      Main.hs
+  hs-source-dirs:
+      test
+  other-modules:
+      Fp
+  build-depends:
+    , halo2-hs
+    , tasty
+    , tasty-hunit
+    , template-haskell
 
 executable demo
   import:

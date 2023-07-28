@@ -78,6 +78,10 @@ jobs:
         working-directory: halo2-hs
         run: cabal build
 
+      - name: Test Haskell library
+        working-directory: halo2-hs
+        run: cabal test
+
       - name: Run Demo
         working-directory: halo2-hs
         run: cabal run

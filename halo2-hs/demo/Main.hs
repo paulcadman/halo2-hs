@@ -9,6 +9,6 @@ main = do
     fp2 <- fpFromRawArgs 1 1 1 1
     fpDebug fp1 >>= print
     fpDebug fp2 >>= print
-    fpDebug (fpMul fp1 fp2) >>= print
-    fpDebug (fpNeg (fpNeg fp1)) >>= print
-    fpDebug (fpDouble fp2) >>= print
+    fpMul fp1 fp2 >>= fpDebug >>= print
+    fpNeg fp1 >>= fpNeg >>= fpDebug >>= print
+    fpDouble fp2 >>= fpDebug >>= print

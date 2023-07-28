@@ -30,49 +30,49 @@ import Data.Text (Text)
 #}
 
 
-{# fun pure unsafe halo2_rs_fp_zero as fpZero
+{# fun unsafe halo2_rs_fp_zero as fpZero
      {}
   -> `Fp'
 #}
 
-{# fun pure unsafe halo2_rs_fp_one as fpOne
+{# fun unsafe halo2_rs_fp_one as fpOne
      {}
   -> `Fp'
 #}
 
-{# fun pure unsafe halo2_rs_fp_double as fpDouble
+{# fun unsafe halo2_rs_fp_double as fpDouble
      { `Fp'
      }
   -> `Fp'
 #}
 
-{# fun pure unsafe halo2_rs_fp_neg as fpNeg
+{# fun unsafe halo2_rs_fp_neg as fpNeg
      { `Fp'
      }
   -> `Fp'
 #}
 
-{# fun pure unsafe halo2_rs_fp_square as fpSquare
+{# fun unsafe halo2_rs_fp_square as fpSquare
      { `Fp'
      }
   -> `Fp'
 #}
 
-{# fun pure unsafe halo2_rs_fp_mul as fpMul
+{# fun unsafe halo2_rs_fp_mul as fpMul
      { `Fp'
      , `Fp'
      }
   -> `Fp'
 #}
 
-{# fun pure unsafe halo2_rs_fp_add as fpAdd
+{# fun unsafe halo2_rs_fp_add as fpAdd
      { `Fp'
      , `Fp'
      }
   -> `Fp'
 #}
 
-{# fun pure unsafe halo2_rs_fp_sub as fpSub
+{# fun unsafe halo2_rs_fp_sub as fpSub
      { `Fp'
      , `Fp'
      }

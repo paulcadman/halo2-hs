@@ -30,12 +30,12 @@ import Data.Text (Text)
 #}
 
 
-{# fun unsafe halo2_rs_fp_zero as fpZero
+{# fun pure unsafe halo2_rs_fp_zero as fpZero
      {}
   -> `Fp'
 #}
 
-{# fun unsafe halo2_rs_fp_one as fpOne
+{# fun pure unsafe halo2_rs_fp_one as fpOne
      {}
   -> `Fp'
 #}

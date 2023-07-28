@@ -29,6 +29,12 @@ import Data.Text (Text)
   -> `()'
 #}
 
+{# fun unsafe halo2_rs_fp_eq as fpEq
+     { `Fp'
+     , `Fp'
+     }
+  -> `Bool'
+#}
 
 {# fun pure unsafe halo2_rs_fp_zero as fpZero
      {}

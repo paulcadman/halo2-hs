@@ -16,3 +16,5 @@ main = do
     fpDouble fp2 >>= fpDebug >>= print
     fpDebug one >>= print
     fpDebug zero >>= print
+    (show <$> fpEq one zero) >>= print
+    (show <$> fpEq one one) >>= print

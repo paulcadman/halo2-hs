@@ -51,6 +51,13 @@ pub extern "C" fn halo2_rs_fp_debug(fp: *mut Fp, out: *mut u8, out_len: &mut usi
     marshall_to_haskell_var(&result, out, out_len, RW);
 }
 
+#[no_mangle]
+pub extern "C" fn halo2_rs_fp_eq(fp1: *mut Fp, fp2: *mut Fp) -> bool {
+    let fp1: &Fp = unsafe { &*fp1 };
+    let fp2: &Fp = unsafe { &*fp2 };
+    fp1.0 == fp2.0
+}
+
 fn fp_binary_op<F>(op: F, fp1: *mut Fp, fp2: *mut Fp) -> *mut Fp where F: FnOnce(&Halo2Fp, &Halo2Fp) -> Halo2Fp {
     let fp1: &Fp = unsafe { &*fp1 };
     let fp2: &Fp = unsafe { &*fp2 };

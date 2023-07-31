@@ -14,6 +14,7 @@ module Halo2Hs.Fp (
   , fpEq
   , fpInvert
   , fpSqrt
+  , fpPow
 ) where
 
 import Foreign.Rust.Marshall.Variable

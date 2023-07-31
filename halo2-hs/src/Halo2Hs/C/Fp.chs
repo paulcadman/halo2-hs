@@ -36,6 +36,13 @@ fpToMaybe fp =  withFp fp $ \ptr ->
   -> `()'
 #}
 
+{# fun unsafe halo2_rs_fp_pow as fpPow
+     { `Fp'
+     , toBorshVar* `[Word64]'&
+     }
+  -> `Fp'
+#}
+
 {# fun unsafe halo2_rs_fp_eq as fpEq
      { `Fp'
      , `Fp'
@@ -44,6 +51,12 @@ fpToMaybe fp =  withFp fp $ \ptr ->
 #}
 
 {# fun unsafe halo2_rs_fp_invert as fpInvertUnsafe
+     { `Fp'
+     }
+  -> `Fp'
+#}
+
+{# fun unsafe halo2_rs_fp_sqrt as fpSqrtUnsafe
      { `Fp'
      }
   -> `Fp'

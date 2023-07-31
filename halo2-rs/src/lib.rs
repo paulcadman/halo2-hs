@@ -102,6 +102,16 @@ pub extern "C" fn halo2_rs_fp_sqrt(fp: *mut Fp) -> Option<NonNull<Fp>> {
     fp_unary_op_option(|f| Option::from(f.sqrt()), fp)
 }
 
+
+#[no_mangle]
+pub extern "C" fn halo2_rs_fp_pow(fp: *mut Fp, raw_bytes: *const u8, raw_bytes_len: usize) -> *mut Fp {
+    let fp: &Fp = unsafe { &*fp };
+    let digits: Vec<u64> = marshall_from_haskell_var(raw_bytes, raw_bytes_len, RW);
+    let pow_result: Halo2Fp = fp.0.pow(digits);
+    let fp = Box::new(Fp(pow_result));
+    Box::into_raw(fp)
+}
+
 #[no_mangle]
 pub extern "C" fn halo2_rs_fp_zero() -> *mut Fp {
     fp_nullary_op(Halo2Fp::zero)

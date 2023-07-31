@@ -33,4 +33,10 @@ fpTests = testGroup "Fp Tests"
        Nothing -> assertFailure "expected fpSqrt fpZero to be fpZero"
        Just s -> do
          fpEq s fpZero @? "fpSqrt fpZero is not equal to fpZero"
+ , testCase "fpPow fpOne 1 is equal to fpOne" $ do
+     p <- fpPow fpOne [1]
+     fpEq p fpOne @? "fpPow fpOne 1 is not equal to fpOne"
+ , testCase "fpPow fpZero 0 is equal to fpOne" $ do
+     p <- fpPow fpZero [0]
+     fpEq p fpOne @? "fpPow fpZero 0 is not equal to fpOne"
  ]

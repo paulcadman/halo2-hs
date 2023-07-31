@@ -18,10 +18,7 @@ pub const RW: PhantomData<RW> = PhantomData;
 pub struct Fp(Halo2Fp);
 
 #[no_mangle]
-pub extern "C" fn halo2_rs_fp_from_raw(
-    raw_bytes: *const u8,
-    raw_bytes_len: usize,
-) -> *mut Fp {
+pub extern "C" fn halo2_rs_fp_from_raw(raw_bytes: *const u8, raw_bytes_len: usize) -> *mut Fp {
     let raw_vec: Vec<u64> = marshall_from_haskell_var(raw_bytes, raw_bytes_len, RW);
     let raw: [u64; 4] = to_sized_array(raw_vec);
     let fp = Box::new(Fp(Halo2Fp::from_raw(raw)));
@@ -29,12 +26,7 @@ pub extern "C" fn halo2_rs_fp_from_raw(
 }
 
 #[no_mangle]
-pub extern "C" fn halo2_rs_fp_from_raw_args(
-    a1: u64,
-    a2: u64,
-    a3: u64,
-    a4: u64,
-) -> *mut Fp {
+pub extern "C" fn halo2_rs_fp_from_raw_args(a1: u64, a2: u64, a3: u64, a4: u64) -> *mut Fp {
     let fp = Box::new(Fp(Halo2Fp::from_raw([a1, a2, a3, a4])));
     Box::into_raw(fp)
 }
@@ -63,20 +55,29 @@ pub extern "C" fn halo2_rs_fp_eq(fp1: *mut Fp, fp2: *mut Fp) -> bool {
     fp1.0 == fp2.0
 }
 
-fn fp_binary_op<F>(op: F, fp1: *mut Fp, fp2: *mut Fp) -> *mut Fp where F: FnOnce(&Halo2Fp, &Halo2Fp) -> Halo2Fp {
+fn fp_binary_op<F>(op: F, fp1: *mut Fp, fp2: *mut Fp) -> *mut Fp
+where
+    F: FnOnce(&Halo2Fp, &Halo2Fp) -> Halo2Fp,
+{
     let fp1: &Fp = unsafe { &*fp1 };
     let fp2: &Fp = unsafe { &*fp2 };
     let result = Box::new(Fp(op(&fp1.0, &fp2.0)));
     Box::into_raw(result)
 }
 
-fn fp_unary_op<F>(op: F, fp: *mut Fp) -> *mut Fp where F: FnOnce(&Halo2Fp) -> Halo2Fp {
+fn fp_unary_op<F>(op: F, fp: *mut Fp) -> *mut Fp
+where
+    F: FnOnce(&Halo2Fp) -> Halo2Fp,
+{
     let fp: &Fp = unsafe { &*fp };
     let result = Box::new(Fp(op(&fp.0)));
     Box::into_raw(result)
 }
 
-fn fp_nullary_op<F>(op: F) -> *mut Fp where F: FnOnce() -> Halo2Fp {
+fn fp_nullary_op<F>(op: F) -> *mut Fp
+where
+    F: FnOnce() -> Halo2Fp,
+{
     let fp = Box::new(Fp(op()));
     Box::into_raw(fp)
 }

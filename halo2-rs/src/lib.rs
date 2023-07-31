@@ -82,12 +82,24 @@ where
     Box::into_raw(fp)
 }
 
-#[no_mangle]
-pub extern "C" fn halo2_rs_fp_invert(fp: *mut Fp) -> Option<NonNull<Fp>> {
+fn fp_unary_op_option<F>(op: F, fp: *mut Fp) -> Option<NonNull<Fp>>
+where
+    F: FnOnce(&Halo2Fp) -> Option<Halo2Fp>
+{
     let fp: &Fp = unsafe { &*fp };
-    let inv_result = fp.0.invert();
+    let inv_result = op(&fp.0);
     let inv_option: Option<Halo2Fp> = Option::from(inv_result);
     inv_option.and_then(|x| NonNull::new(Box::into_raw(Box::new(Fp(x)))))
+}
+
+#[no_mangle]
+pub extern "C" fn halo2_rs_fp_invert(fp: *mut Fp) -> Option<NonNull<Fp>> {
+    fp_unary_op_option(|f| Option::from(f.invert()), fp)
+}
+
+#[no_mangle]
+pub extern "C" fn halo2_rs_fp_sqrt(fp: *mut Fp) -> Option<NonNull<Fp>> {
+    fp_unary_op_option(|f| Option::from(f.sqrt()), fp)
 }
 
 #[no_mangle]

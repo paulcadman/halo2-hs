@@ -13,6 +13,7 @@ module Halo2Hs.Fp (
   , fpSquare
   , fpEq
   , fpInvert
+  , fpSqrt
 ) where
 
 import Foreign.Rust.Marshall.Variable
@@ -23,6 +24,7 @@ fpDebug :: Fp -> IO Text
 fpDebug = withBorshVarBuffer . halo2FpDebug
 
 fpInvert :: Fp -> IO (Maybe Fp)
-fpInvert fp = do
-  unsafeFp <- fpInvertUnsafe fp
-  fpToMaybe unsafeFp
+fpInvert fp = fpInvertUnsafe fp >>= fpToMaybe
+
+fpSqrt :: Fp -> IO (Maybe Fp)
+fpSqrt fp = fpSqrtUnsafe fp >>= fpToMaybe

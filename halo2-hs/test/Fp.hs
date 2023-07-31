@@ -21,4 +21,16 @@ fpTests = testGroup "Fp Tests"
      case inv of
        Nothing -> return ()
        Just _ -> assertFailure "expected fpInvert fpZero to be Nothing"
+ , testCase "fpSqrt fpOne is equal to fpOne" $ do
+     r <- fpSqrt fpOne
+     case r of
+       Nothing -> assertFailure "expected fpSqrt fpOne to be fpOne"
+       Just s -> do
+         fpEq s fpOne @? "fpSqrt fpOne is not equal to fpOne"
+ , testCase "fpSqrt fpZero is equal to fpZero" $ do
+     r <- fpSqrt fpZero
+     case r of
+       Nothing -> assertFailure "expected fpSqrt fpZero to be fpZero"
+       Just s -> do
+         fpEq s fpZero @? "fpSqrt fpZero is not equal to fpZero"
  ]

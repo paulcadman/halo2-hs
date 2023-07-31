@@ -18,3 +18,7 @@ main = do
     fpDebug zero >>= print
     (show <$> fpEq one zero) >>= print
     (show <$> fpEq one one) >>= print
+    inv <- fpInvert zero
+    case inv of
+      Nothing -> print "could not invert one"
+      Just invFp -> fpDebug invFp >>= print

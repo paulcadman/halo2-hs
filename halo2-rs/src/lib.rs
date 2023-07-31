@@ -1,6 +1,6 @@
-use std::marker::PhantomData;
+use std::{marker::PhantomData, ptr::NonNull};
 
-use halo2_proofs::pasta::Fp as Halo2Fp;
+use halo2_proofs::{arithmetic::Field, pasta::Fp as Halo2Fp};
 use haskell_ffi::{from_haskell::marshall_from_haskell_var, to_haskell::marshall_to_haskell_var};
 
 fn to_sized_array<T, const N: usize>(v: Vec<T>) -> [T; N] {
@@ -41,7 +41,12 @@ pub extern "C" fn halo2_rs_fp_from_raw_args(
 
 #[no_mangle]
 pub extern "C" fn halo2_rs_free_fp(fp: *mut Fp) {
-    let _fp: Box<Fp> = unsafe { Box::from_raw(fp) };
+    match NonNull::new(fp) {
+        None => return,
+        Some(fp_nonnull) => {
+            let _fp: Box<Fp> = unsafe { Box::from_raw(fp_nonnull.as_ptr()) };
+        }
+    }
 }
 
 #[no_mangle]
@@ -74,6 +79,14 @@ fn fp_unary_op<F>(op: F, fp: *mut Fp) -> *mut Fp where F: FnOnce(&Halo2Fp) -> Ha
 fn fp_nullary_op<F>(op: F) -> *mut Fp where F: FnOnce() -> Halo2Fp {
     let fp = Box::new(Fp(op()));
     Box::into_raw(fp)
+}
+
+#[no_mangle]
+pub extern "C" fn halo2_rs_fp_invert(fp: *mut Fp) -> Option<NonNull<Fp>> {
+    let fp: &Fp = unsafe { &*fp };
+    let inv_result = fp.0.invert();
+    let inv_option: Option<Halo2Fp> = Option::from(inv_result);
+    inv_option.and_then(|x| NonNull::new(Box::into_raw(Box::new(Fp(x)))))
 }
 
 #[no_mangle]
